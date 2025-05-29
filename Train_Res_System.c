@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 
@@ -5,10 +6,13 @@
 #define GREEN "\033[1;32m"
 #define YELLOW "\033[1;33m"
 #define BLUE "\033[1;34m"
+#define CYAN "\033[1;36m"
+#define MAGENTA "\033[1;35m"
 #define RESET "\033[0m"
 
 #define max_user 10
-struct booking  // for the feture of train
+
+struct booking
 {
     int TicketId;
     int trainno;
@@ -18,7 +22,7 @@ struct booking  // for the feture of train
     char reservation_status[20];
 };
 
-typedef struct   // this structure is for login sytem 
+typedef struct
 {
     char username[30];
     char password[30];
@@ -28,7 +32,7 @@ user users;
 int user_count = 0;
 
 void register_user();
-int login_user(); // return the user index
+int login_user();
 void fix_fgets_input(char *);
 void input_password(char *);
 void book_tickets();
@@ -36,7 +40,6 @@ void Cancel_tickets();
 void view_passenger();
 void search_tickets();
 void view_reservation();
-void Admin_log();
 void optionmenu();
 
 int flag = 0;
@@ -47,10 +50,14 @@ int main()
     int options;
     while (1)
     {
-        printf(RED "\nWelcome  to user managment system" RESET);
-        printf(BLUE "\n1. Register\n2. Login\n3. Admin\n4. Exit\nSelect an options : " RESET);
+        printf(RED "\n==================================================\n" RESET);
+        printf(GREEN "        Welcome to the Railway Login System     \n" RESET);
+        printf(BLUE "==================================================\n" RESET);
+        printf(MAGENTA "\n1. Register\n2. Login\n3. Exit\n" RESET);
+        printf(CYAN "Select an option: " RESET);
         scanf("%d", &options);
-        getchar(); // consume extra enter
+        getchar();
+
         switch (options)
         {
         case 1:
@@ -61,33 +68,34 @@ int main()
             user_index = login_user();
             if (flag == 1)
             {
-                printf(GREEN "login succesful ! welcome, %s!" RESET, users.username);
+                printf(GREEN "\nLogin successful! Welcome, %s!\n" RESET, users.username);
             }
             else
             {
-                printf(YELLOW "login unsuccesfull ! \n" RESET);
+                printf(RED "\nLogin unsuccessful! Please try again.\n" RESET);
                 flag = 0;
             }
             break;
-        case 4:
-            printf(RED "Exiting Program ...." RESET);
-            return -1;
-            break;
         case 3:
-            Admin_log();
-            break;
+            printf(RED "\nExiting Program ....\n" RESET);
+            return -1;
         default:
-            printf(BLUE "Invalid Options Please Try Again !!.." RESET);
+            printf(YELLOW "Invalid Option! Please Try Again.\n" RESET);
         }
+
         if (flag == 1)
         {
             int choices;
-            printf(RED "\nWelcome to Train Reservation system ! \n" RESET);
-            printf(GREEN "1. Book tickets\n2. Cancel Tickets\n3. View Passenger Details\n4. Search Tickets\n5. View Reservation status\n6. View Options\n7. Exit\n" RESET);
+            printf(RED "\n==========================================\n" RESET);
+            printf(GREEN "     Welcome to the Train Booking System  \n" RESET);
+            printf(CYAN "     Your journey starts here!            \n" RESET);
+            printf(YELLOW "     Book, Cancel, and Explore with ease! \n" RESET);
+            printf(RED "==========================================\n" RESET);
+            printf(MAGENTA "\n1. Book tickets\n2. Cancel Tickets\n3. View Passenger Details\n4. Search Tickets\n5. View Reservation status\n6. View Options\n7. Exit\n" RESET);
 
             while (1)
             {
-                printf(YELLOW "\nChoose option according to you - > " RESET);
+                printf(CYAN "\nChoose an option -> " RESET);
                 scanf("%d", &choices);
                 switch (choices)
                 {
@@ -110,10 +118,15 @@ int main()
                     optionmenu();
                     break;
                 case 7:
-                    printf(RED "Exitting the programm ..." RESET);
+                    printf(RED "\n\n==========================================\n" RESET);
+                    printf(GREEN "     Thank you for using our system!      \n" RESET);
+                    printf(BLUE "     Exiting the Train Booking System     \n" RESET);
+                    printf(YELLOW "     Have a great day! Safe travels :)    \n" RESET);
+                    printf(RED "==========================================\n\n" RESET);
                     return -1;
                 default:
-                    printf(BLUE "invalid options ! " RESET);
+                    printf(YELLOW "Invalid option"
+                                  "! Please try again.\n" RESET);
                 }
             }
         }
@@ -276,7 +289,7 @@ void search_tickets()
     {
         if (id == temp.TicketId)
         {
-            printf(BLUE"Tickets found \n"RESET);
+            printf(BLUE "Tickets found \n" RESET);
 
             printf("Name : %s\n", temp.name);
             printf("Train no : %d\n", temp.trainno);
@@ -289,7 +302,7 @@ void search_tickets()
     }
     if (found == 0)
     {
-        printf(RED"No tickets found "RED);
+        printf(RED "No tickets found " RED);
     }
 }
 void view_reservation()
@@ -305,7 +318,7 @@ void view_reservation()
     struct booking res;
     printf("Enter your tickets id no : ");
     scanf("%d", &id);
-    rewind(fp); // Move the file pointer to the beginning of the file
+    rewind(fp);
     while (fread(&res, sizeof(struct booking), 1, fp))
     {
         if (id == res.TicketId)
@@ -321,31 +334,6 @@ void view_reservation()
         printf(RED "no reservation found with this id \n" RESET);
     }
     fclose(fp);
-}
-void Admin_log()
-{
-    FILE *fp = fopen("admin.txt", "r");
-    user temp;
-    char user_name[30];
-    char password[30];
-    printf("Enter your name : ");
-    scanf("%s", &user_name);
-    printf("Enter your password : ");
-    scanf("%d", &password);
-    while (fread(&temp, sizeof(struct booking), 1, fp))
-    {
-        if (strcmp(user_name, temp.username) == 0 && strcmp(password, temp.password))
-        {
-
-            flag == 1;
-            printf("login as admin succesfull !\n");
-        }
-        else
-        {
-            printf(RED "Login failed !" RESET);
-            flag = 0;
-        }
-    }
 }
 void optionmenu()
 {
